@@ -1,0 +1,54 @@
+name: CI Build Pipeline
+
+# EXERCICE 6 : Déclencheur
+on:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: read
+  issues: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  build:
+    # EXERCICE 6 : Définition de l'agent
+    runs-on: ubuntu-latest
+
+    steps:
+      # EXERCICE 6 : Checkout du code et configuration de l'environnement
+      - name: Récupération du code source
+        uses: actions/checkout@v5
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '26'
+
+      # EXERCICE 7 : Résolution des dépendances (Stricte)
+      - name: Installation des dépendances via Lockfile
+        run: npm ci
+
+      # EXERCICE 7 : Exécution des tests automatisés (Shift-Left)
+      - name: Exécution des tests unitaires
+        run: npm test
+
+      # EXERCICE 9 (Bonus) : Publication des résultats des tests unitaires
+      - name: Publier les résultats des tests
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: junit.xml
+
+      # EXERCICE 8 : Création de l'artefact
+      - name: Génération de l'artefact final
+        uses: actions/upload-artifact@v5
+        with:
+          name: build-artifact
+          path: |
+            index.js
+            package.json
+            junit.xml
