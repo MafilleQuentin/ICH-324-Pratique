@@ -59,24 +59,24 @@ jobs:
           name: coverage-report
           path: coverage/lcov.info
 
-sonarcloud:
-  needs: build
-  runs-on: ubuntu-latest
+  sonarcloud:
+    needs: build
+    runs-on: ubuntu-latest
 
-  steps:
-    - name: Récupération du code source (historique complet)
-      uses: actions/checkout@v5
-      with:
-        fetch-depth: 0     
+    steps:
+      - name: Récupération du code source (historique complet)
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0     
 
-    - name: Récupération du rapport de couverture
-      uses: actions/download-artifact@v5
-      with:
-        name: coverage-report
-        path: coverage/
+      - name: Récupération du rapport de couverture
+        uses: actions/download-artifact@v5
+        with:
+          name: coverage-report
+          path: coverage/
 
 
-    - name: Analyse SonarCloud et Quality Gate
-      uses: SonarSource/sonarqube-scan-action@v6
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Analyse SonarCloud et Quality Gate
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
